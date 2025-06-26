@@ -47,7 +47,7 @@ SmartSpender is a full-stack MERN application that helps users track their incom
 
 ### 📁 Clone Repository
 ```bash
-git clone https://github.com/yourusername/smartspender.git
+git clone https://github.com/vkaryan1502/SmartSpender.git
 cd smartspender
 ```
 
@@ -72,7 +72,7 @@ Create `.env` in both `client/` and `server/` directories.
 #### Example for `server/.env`:
 ```
 PORT=5000
-MONGO_URI=your_mongodb_uri
+MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 GEMINI_API_KEY=your_gemini_api_key
 ```
@@ -81,7 +81,7 @@ GEMINI_API_KEY=your_gemini_api_key
 
 ## 🧠 AI Integration
 
-- Gemini/OpenAI API is used to analyze your transaction data
+- Gemini API is used to analyze your transaction data
 - Gives budgeting advice, overspending alerts, and category-level suggestions
 - Future plan: integrate voice chat and natural language queries
 
@@ -108,7 +108,7 @@ GEMINI_API_KEY=your_gemini_api_key
 
 **Vishal Kumar**  
 🚀 Full-Stack Developer | MERN + AI Enthusiast  
-[Portfolio Website](https://yourportfolio.com) • [LinkedIn](https://linkedin.com/in/yourprofile) • [GitHub](https://github.com/yourusername)
+[Portfolio Website](https://yourportfolio.com) • [LinkedIn](https://www.linkedin.com/in/vishal-kumar-608b5a191/) • [GitHub](https://github.com/vkaryan1058)
 
 ---
 
