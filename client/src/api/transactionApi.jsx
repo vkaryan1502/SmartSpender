@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 })
 
 // Include token in header
@@ -16,3 +16,5 @@ API.interceptors.request.use((config) => {
 
 export const createTransaction = (data) => API.post('/transactions/add', data)
 export const getTransactions = () => API.get('/transactions/:userId')
+export const updateTransaction = (id) => API.put('/transactions/:id')
+export const deleteTransaction = (id, data) => API.delete('/transactions/:id', data)

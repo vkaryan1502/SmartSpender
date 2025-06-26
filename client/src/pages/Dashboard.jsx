@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/authContext'
-import { createTransaction, getTransactions } from '../api/transactionApi'
+import {
+  createTransaction,
+  getTransactions,
+  deleteTransaction,
+  updateTransaction,
+} from '../api/transactionApi'
 import Navbar from '../components/Navbar'
 
 function Dashboard() {
@@ -9,6 +14,7 @@ function Dashboard() {
 
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [editId, setEditId] = useState(null)
 
   const [form, setForm] = useState({
     title: '',
@@ -23,15 +29,23 @@ function Dashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    const newTxn = {
+    const txnData = {
       ...form,
       amount: parseFloat(form.amount),
     }
 
     try {
-      const res = await createTransaction(newTxn)
-      setTransactions([res.data, ...transactions])
+      if (editId) {
+        const res = await updateTransaction(editId, txnData)
+        setTransactions(
+          transactions.map((t) => (t._id === editId ? res.data : t))
+        )
+        setEditId(null)
+      } else {
+        const res = await createTransaction(txnData)
+        setTransactions([res.data, ...transactions])
+      }
+
       setForm({
         title: '',
         amount: '',
@@ -39,8 +53,27 @@ function Dashboard() {
         date: new Date().toISOString().slice(0, 10),
       })
     } catch (err) {
-      console.error('Failed to add transaction:', err)
+      console.error('Failed to submit transaction:', err)
     }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteTransaction(id)
+      setTransactions(transactions.filter((txn) => txn._id !== id))
+    } catch (err) {
+      console.error('Failed to delete transaction:', err)
+    }
+  }
+
+  const handleEdit = (txn) => {
+    setEditId(txn._id)
+    setForm({
+      title: txn.title,
+      amount: txn.amount,
+      type: txn.type,
+      date: txn.date?.slice(0, 10),
+    })
   }
 
   const fetchTransactions = async () => {
@@ -54,7 +87,6 @@ function Dashboard() {
     }
   }
 
-  // ✅ Only fetch if user is ready
   useEffect(() => {
     if (user) fetchTransactions()
   }, [user])
@@ -103,8 +135,13 @@ function Dashboard() {
 
           {/* Form */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-10">
-            <h2 className="text-xl font-semibold text-primary mb-4">Add Transaction</h2>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 className="text-xl font-semibold text-primary mb-4">
+              {editId ? 'Edit Transaction' : 'Add Transaction'}
+            </h2>
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
               <input
                 type="text"
                 name="title"
@@ -140,7 +177,7 @@ function Dashboard() {
                 className="border p-3 rounded"
               />
               <button className="md:col-span-2 bg-primary text-white py-2 rounded hover:bg-opacity-90">
-                Add Transaction
+                {editId ? 'Update Transaction' : 'Add Transaction'}
               </button>
             </form>
           </div>
@@ -165,13 +202,29 @@ function Dashboard() {
                         {new Date(txn.date).toLocaleDateString()}
                       </p>
                     </div>
-                    <span
-                      className={`font-semibold ${
-                        txn.type === 'income' ? 'text-success' : 'text-error'
-                      }`}
-                    >
-                      {txn.type === 'income' ? '+' : '-'}₹{txn.amount}
-                    </span>
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`font-semibold ${
+                          txn.type === 'income' ? 'text-success' : 'text-error'
+                        }`}
+                      >
+                        {txn.type === 'income' ? '+' : '-'}₹{txn.amount}
+                      </span>
+                      <button
+                        onClick={() => handleEdit(txn)}
+                        className="text-blue-500 hover:text-blue-700 text-sm"
+                        title="Edit"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => handleDelete(txn._id)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                        title="Delete"
+                      >
+                        🗑
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
