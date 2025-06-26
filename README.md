@@ -75,6 +75,7 @@ PORT=5000
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 GEMINI_API_KEY=your_gemini_api_key
+CLIENT_ORIGIN=http://localhost:5173
 ```
 
 ---

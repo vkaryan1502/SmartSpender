@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5174', // your frontend's Vite dev server
+  origin: process.env.CLIENT_ORIGIN,
   credentials: true,
 }));
 
@@ -26,9 +26,6 @@ app.use(errorHandler);
 app.get('/', (req, res) => {
     res.send('SmartSpender server is running...');
 });
- app.get('/api/auth/login', (req, res) => {
-        res.send("SmartSpender Login page is working...");
-    })
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT , () => {
