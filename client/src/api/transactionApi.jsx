@@ -16,5 +16,5 @@ API.interceptors.request.use((config) => {
 
 export const createTransaction = (data) => API.post('/transactions/add', data)
 export const getTransactions = () => API.get('/transactions/:userId')
-export const updateTransaction = (id) => API.put('/transactions/:id')
-export const deleteTransaction = (id, data) => API.delete('/transactions/:id', data)
+export const updateTransaction = (id, data) => API.put('/transactions/:id', data)
+export const deleteTransaction = (id) => API.delete('/transactions/:id')

@@ -2,31 +2,46 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
 
 function Navbar() {
-  const { logout, user } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
     logout()
-    navigate('/login')
+    navigate('/')
   }
 
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold text-primary">SmartSpender</h1>
+    <nav className="bg-white shadow-md sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+      {/* Left: Logo */}
+      <Link to="/" className="text-xl font-bold text-primary">
+        SmartSpender
+      </Link>
 
-      {user && (
-        <div className="flex gap-4 items-center">
-          <Link to="/dashboard" className="text-gray-700 hover:text-primary font-medium">
-            Dashboard
-          </Link>
+      <div className="hidden md:flex gap-6 text-gray-700">
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/services">Services</Link>
+        <Link to="/contact">Contact</Link>
+      </div>
+
+      {/* Right: Auth Button */}
+      <div>
+        {user ? (
           <button
             onClick={handleLogout}
-            className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90"
+            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
           >
             Logout
           </button>
-        </div>
-      )}
+        ) : (
+          <Link
+            to="/login"
+            className="bg-primary text-white px-4 py-1 rounded hover:bg-opacity-90"
+          >
+            Login
+          </Link>
+        )}
+      </div>
     </nav>
   )
 }

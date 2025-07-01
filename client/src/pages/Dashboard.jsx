@@ -7,9 +7,11 @@ import {
   updateTransaction,
 } from '../api/transactionApi'
 import Navbar from '../components/Navbar'
+import ChartSection from "../components/ChartSection";
 
 function Dashboard() {
   const { user } = useAuth()
+  console.log("Logged in user:", user)
   const displayName = user?.user?.name || user?.name || 'User'
 
   const [transactions, setTransactions] = useState([])
@@ -58,6 +60,7 @@ function Dashboard() {
   }
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
     try {
       await deleteTransaction(id)
       setTransactions(transactions.filter((txn) => txn._id !== id))
@@ -76,19 +79,23 @@ function Dashboard() {
     })
   }
 
-  const fetchTransactions = async () => {
-    try {
-      const res = await getTransactions()
-      setTransactions(res.data)
-    } catch (err) {
-      console.error('Failed to fetch transactions:', err)
-    } finally {
-      setLoading(false)
-    }
+const fetchTransactions = async () => {
+  try {
+    const res = await getTransactions()
+    console.log('✅ Transactions fetched:', res.data)
+    setTransactions(res.data)
+  } catch (err) {
+    console.error('❌ Failed to fetch transactions:', err.response?.data || err.message)
+  } finally {
+    setLoading(false)
   }
+}
 
   useEffect(() => {
-    if (user) fetchTransactions()
+    console.log('Current User:', user)
+    if (user) {
+      setTimeout(() => fetchTransactions(), 0)
+    }
   }, [user])
 
   const income = transactions
@@ -124,9 +131,8 @@ function Dashboard() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-lg text-gray-600">Balance</h2>
               <p
-                className={`text-2xl font-bold ${
-                  balance >= 0 ? 'text-success' : 'text-error'
-                } mt-2`}
+                className={`text-2xl font-bold ${balance >= 0 ? 'text-success' : 'text-error'
+                  } mt-2`}
               >
                 ₹{balance}
               </p>
@@ -182,6 +188,8 @@ function Dashboard() {
             </form>
           </div>
 
+          <ChartSection transactions={transactions} />
+
           {/* Transactions */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-primary mb-4">Recent Transactions</h2>
@@ -204,9 +212,8 @@ function Dashboard() {
                     </div>
                     <div className="flex items-center gap-4">
                       <span
-                        className={`font-semibold ${
-                          txn.type === 'income' ? 'text-success' : 'text-error'
-                        }`}
+                        className={`font-semibold ${txn.type === 'income' ? 'text-success' : 'text-error'
+                          }`}
                       >
                         {txn.type === 'income' ? '+' : '-'}₹{txn.amount}
                       </span>
