@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 })
 
-// Include token in header
+
 API.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('user'))
   const token = user?.token
@@ -14,7 +14,7 @@ API.interceptors.request.use((config) => {
   return config
 })
 
-export const createTransaction = (data) => API.post('/transactions/add', data)
-export const getTransactions = () => API.get('/transactions/:userId')
-export const updateTransaction = (id, data) => API.put('/transactions/:id', data)
-export const deleteTransaction = (id) => API.delete('/transactions/:id')
+export const createTransaction = (data) => API.post('/transactions', data)
+export const getTransactions = () => API.get('/transactions')
+export const updateTransaction = (id, data) => API.put(`/transactions/${id}`, data)
+export const deleteTransaction = (id) => API.delete(`/transactions/${id}`)
